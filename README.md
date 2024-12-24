@@ -5,25 +5,12 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
 
 ---
 
-## Repository Setup
-
-### Task
-- Create a GitHub repository named **CloudDevOpsProject**.
-- Initialize the repository with a README file.
-
-### Deliverables
-- [GitHub Repository Link](#) (Replace with actual URL).
-
----
-
 ## Containerization with Docker
 
 ### Task
 - Develop a `Dockerfile` for building the application image.
 - Source code: [FinalProjectCode](https://github.com/IbrahimAdell/FinalProjectCode).
 
-### Deliverables
-- Dockerfile committed to the repository.
 
 ---
 
@@ -35,9 +22,6 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
   - EC2 instance for application deployment.
 - Use Terraform Modules.
 
-### Deliverables
-- Terraform scripts committed to the repository.
-- Modularized Terraform code.
 
 ---
 
@@ -48,10 +32,7 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
   - Use S3 Terraform Backend for state management.
   - Integrate CloudWatch for monitoring.
 
-### Deliverables
-- Documentation for AWS integration with Terraform scripts.
 
----
 
 ## Configuration Management with Ansible
 
@@ -62,9 +43,6 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
   - Set up necessary environment variables.
 - Use Ansible roles.
 
-### Deliverables
-- Ansible playbooks committed to the repository.
-- Structured using Ansible roles.
 
 ---
 
@@ -81,9 +59,6 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
   7. Deploy on OpenShift.
 - Utilize Shared Jenkins Library and Jenkins slave.
 
-### Deliverables
-- `Jenkinsfile` committed to the repository.
-- Implementation of shared libraries.
 
 ---
 
@@ -91,7 +66,7 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/AbdallahHesham44/CloudDevOpsProject.git
    ```
 
 2. Build and run the Docker container:
@@ -116,6 +91,5 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
 
 ---
 
-## Contact
-For any questions or issues, please open an issue in the repository or contact the maintainer.
+# Done !!
 
