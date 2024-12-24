@@ -1,0 +1,94 @@
+//@Library('shared-library') _ // Import the shared library configured in Jenkins
+
+pipeline {
+    agent any 
+  //  {   
+//     label 'docker-slave' // Jenkins slave label configured to run this pipeline
+//    }
+
+    environment {
+        REGISTRY = "https://github.com/Ibrahim-Adell/FinalProjectCode.git" // Replace with your container registry URL
+        IMAGE_NAME = "application-image"
+        SONARQUBE_ENV = "SonarQube" // SonarQube environment defined in Jenkins
+        OPENSHIFT_CONFIG_FILE = "kubeconfig" // Path to OpenShift kubeconfig
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                script {
+                    echo 'Running unit tests...'
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                script {
+                    echo 'Building JAR...'
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+
+        stage('SonarQube Test') {
+            steps {
+                script {
+                    echo 'Running SonarQube analysis...'
+                    withSonarQubeEnv(SONARQUBE_ENV) {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:latest ."
+                }
+            }
+        }
+
+        stage('Push Image into Registry') {
+            steps {
+                script {
+                    echo 'Pushing Docker image to registry...'
+                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
+                }
+            }
+        }
+
+        stage('Deploy on OpenShift') {
+            steps {
+                script {
+                    echo 'Deploying application to OpenShift...'
+                    sh """
+                    export KUBECONFIG=${OPENSHIFT_CONFIG_FILE}
+                    oc apply -f deployment.yml
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
+        }
+        always {
+            cleanWs() // Clean workspace after each run
+        }
+    }
+}
