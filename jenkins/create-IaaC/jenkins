@@ -34,6 +34,7 @@ pipeline {
 
         stage('Get EC2 IP') {
             steps {
+withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
              dir('terraform'){
                 script {
                     def terraformOutput = sh(script: 'terraform output -json', returnStdout: true)
@@ -43,6 +44,7 @@ pipeline {
             }
         }
         }
+}
 
         stage('Run Ansible') {
             steps {
