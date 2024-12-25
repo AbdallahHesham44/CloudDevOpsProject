@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        TF_VAR_AWS_ACCESS_KEY = credentials('aws-access-key') // AWS credentials ID in Jenkins
-        TF_VAR_AWS_SECRET_KEY = credentials('aws-secret-key') // AWS credentials ID in Jenkins
-        ANSIBLE_PRIVATE_KEY = credentials('ansible-ssh-key') // Private key for SSH access
+         TF_VAR_AWS_ACCESS_KEY = credentials('aws-credentials')
+        ANSIBLE_PRIVATE_KEY = credentials('ssh-key') // Private key for SSH access
     }
 
     stages {
@@ -26,7 +25,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform'){
-                sh 'terraform apply -auto-approve'
+                sh 'terraform apply --auto-approve'
             }
             }
         }
@@ -46,7 +45,7 @@ pipeline {
         stage('Run Ansible') {
             steps {
                  dir('ansible') {
-                    ansiblePlaybook credentialsId: 'ansible-ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
+                    ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
                 }       
                      }
         }
