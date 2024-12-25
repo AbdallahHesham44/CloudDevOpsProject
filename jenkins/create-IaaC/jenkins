@@ -25,8 +25,10 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform'){
+ withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
                 sh 'terraform apply -auto-approve'
             }
+}
             }
         }
 
