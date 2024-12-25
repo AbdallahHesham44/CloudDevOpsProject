@@ -5,6 +5,9 @@ The **CloudDevOpsProject** is a comprehensive DevOps project that demonstrates s
 
 ---
 
+<img src="https://github.com/saeedkouta/MultiCloudDevOpsProject/assets/167209058/f3fad849-c43d-4630-bb15-50102cc850d0.svg" >
+
+
 ## Containerization with Docker
 
 ### Task
