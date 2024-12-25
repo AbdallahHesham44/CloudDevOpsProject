@@ -2,10 +2,10 @@
   hosts: slave
   become: true
   roles:
-    #- git
-     #- common
-     #- docker
-     #- java
-     #- jenkins
-   - sonarqube
-     #- environment
+    - git
+    - common
+    - docker
+    - java
+    - jenkins
+    - sonarqube
+    - environment
