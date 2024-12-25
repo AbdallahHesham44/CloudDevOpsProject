@@ -12,12 +12,7 @@ pipeline {
        stage('Terraform Init') {
             steps {
                 dir('terraform'){
-                withCredentials([
-                    [
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-cred' // Use the correct credential ID
-                    ]
-                ]) {
+                withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
                     script {
                         env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
                         env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
