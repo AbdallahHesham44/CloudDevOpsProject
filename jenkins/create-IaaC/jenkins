@@ -15,7 +15,7 @@ pipeline {
                 withCredentials([
                     [
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-credentials' // Use the correct credential ID
+                        credentialsId: 'aws-cred' // Use the correct credential ID
                     ]
                 ]) {
                     script {
@@ -30,7 +30,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform'){
-                sh 'terraform apply --auto-approve'
+                sh 'terraform apply -auto-approve'
             }
             }
         }
