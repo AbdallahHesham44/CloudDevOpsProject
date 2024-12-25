@@ -1,11 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-         TF_VAR_AWS_ACCESS_KEY = credentials('aws-credentials')
-        ANSIBLE_PRIVATE_KEY = credentials('ssh-key') // Private key for SSH access
-    }
-
+ 
     stages {
         stage('Checkout Code') {
             steps {
@@ -13,15 +9,24 @@ pipeline {
             }
         }
 
-        stage('Terraform Init') {
+       stage('Terraform Init') {
             steps {
                 dir('terraform'){
-
-                sh 'terraform init'
+                withCredentials([
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-credentials' // Use the correct credential ID
+                    ]
+                ]) {
+                    script {
+                        env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
+                        env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
+                        sh 'terraform init'
+                    }
                 }
             }
         }
-
+}
         stage('Terraform Apply') {
             steps {
                 dir('terraform'){
