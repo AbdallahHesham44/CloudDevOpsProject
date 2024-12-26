@@ -49,8 +49,10 @@ pipeline {
                     ansiblePlaybook(
                         credentialsId: 'ssh-key', 
                         inventory: 'inventory', 
-                        playbook: 'playbook.yml',
-                        additionalOptions: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
+                        playbook: 'playbook.yml', 
+                            extraVars: [
+                            ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+                        ]
                     )
                     // Example shell block if you need to run additional commands
                     sh """
