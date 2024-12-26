@@ -1,32 +1,24 @@
 pipeline {
     agent any
-
     environment {
-        TERRAFORM_DIR = 'terraform'
-        BACKEND_DIR = 'terraform'
-        ANSIBLE_DIR = '../ansible'
-        INVENTORY_FILE = 'inventory'
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key')  // استخدام بيانات الاعتماد الصحيحة
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')  // استخدام بيانات الاعتماد الصحيحة
-        AWS_REGION = 'us-east-1'
+        ec2_ip = ""  // Define as a global variable
     }
-
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/wolf452/FinalProjectCode.git'
+                git branch: 'main', url: 'https://github.com/AbdallahHesham44/CloudDevOpsProject.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir("${TERRAFORM_DIR}") {
-                    withCredentials([aws(credentialsId: 'aws-cred')]) {
+                dir('terraform') {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
                         script {
                             env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
                             env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
+                            sh 'terraform init'
                         }
-                        sh 'terraform init -force-copy'
                     }
                 }
             }
@@ -34,74 +26,49 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir("${TERRAFORM_DIR}") {
-                    sh 'terraform apply -auto-approve'
-                }
-            }
-        }
-
-        stage('Backend Terraform Init') {
-            steps {
-                dir("${BACKEND_DIR}") {
-                    sh 'terraform init'
-                }
-            }
-        }
-
-        stage('Backend Terraform Apply') {
-            steps {
-                dir("${BACKEND_DIR}") {
-                    sh 'terraform apply -auto-approve'
-                }
-            }
-        }
-
-        stage('Get Public IP') {
-            steps {
-                script {
-                    env.PUBLIC_IP = sh(script: "cd ${TERRAFORM_DIR} && terraform output -raw ec2_public_ips", returnStdout: true).trim()
-
-                    if (env.PUBLIC_IP) {
-                        echo "Public IP: ${env.PUBLIC_IP}"
-                    } else {
-                        error "Public IP output not found in Terraform state"
+                dir('terraform') {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                        sh 'terraform apply -auto-approve'
                     }
                 }
             }
         }
 
-        stage('Update Ansible Inventory') {
-            steps {
-                dir("${ANSIBLE_DIR}") {
-                    script {
-                        def inventoryContent = "[ec2]\n${env.PUBLIC_IP} ansible_user=ubuntu ansible_ssh_private_key_file=./ivolve.pem\n"
-                        writeFile file: "${INVENTORY_FILE}", text: inventoryContent
-                    }
-                }
-            }
-        }
-
-        stage('Delay Before Ansible Playbook') {
+        stage('Sleep for 3 Minutes') {
             steps {
                 script {
-                    echo "Waiting for 1 minute before proceeding..."
-                    sleep time: 1, unit: 'MINUTES'
-                    echo "Proceeding to run Ansible playbook..."
+                    echo 'Waiting for resources to initialize...'
+                    sleep(time: 3, unit: 'MINUTES')  // Adjusted to wait for 3 minutes
                 }
             }
         }
 
         stage('Run Ansible') {
             steps {
-                dir("${ANSIBLE_DIR}") {
-                    ansiblePlaybook(
-                        credentialsId: 'ansible-ssh-key',
-                        inventory: "${INVENTORY_FILE}",
-                        playbook: 'playbook.yml',
-                        extras: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
-                    )
+                dir('ansible') {
+                ansiblePlaybook(
+                    credentialsId: 'ssh-key',
+                    inventory: 'inventory',
+                    playbook: 'playbook.yml',
+                    extras: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
+
+                )
+
+                    // Example shell block if you need to run additional commands
+                    sh """
+                        ls
+                        # chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
+                        # ansible-playbook playbook.yml -i inventory --private-key /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key -u ubuntu -e "ansible_ssh_extra_args='-o StrictHostKeyChecking=no'"
+                    """
                 }
             }
+        }
+    }
+    post {
+        always {
+             archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
+             cleanWs()
+           
         }
     }
 }
