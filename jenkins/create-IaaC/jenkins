@@ -49,7 +49,14 @@ pipeline {
         stage('Run Ansible') {
             steps {
                 dir('ansible') {
-                    ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
+ansiblePlaybook(
+    credentialsId: 'ssh-key', 
+    inventory: 'inventory', 
+    playbook: 'playbook.yml',
+    additionalOptions: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
+)
+
+                    //ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
                 sh """
                     ls
                    // chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
