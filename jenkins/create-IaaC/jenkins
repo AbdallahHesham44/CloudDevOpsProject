@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+  environment {
+        ec2_ip = "" // Define as a global variable
+    }
     stages {
         stage('Checkout Code') {
             steps {
