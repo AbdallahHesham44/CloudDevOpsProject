@@ -49,7 +49,7 @@ pipeline {
         stage('Run Ansible') {
             steps {
                 dir('ansible') {
-                    ansiblePlaybook credentialsId: 'ssh-key	', inventory: 'inventory', playbook: 'playbook.yml'
+                    ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
                 sh """
                     ls
                    // chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
@@ -62,8 +62,9 @@ pipeline {
 }
     post {
         always {
-            archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
-            cleanWs()
+           // archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
+           // cleanWs()
+            sh "  echo 'clean'  "
         }
     }
 }
