@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     echo 'Waiting for resources to initialize...'
-                    sleep(time: 3, unit: 'MINUTES')
+                    sleep(time: 3, unit: 'SECONDS')
                 }
             }
         }
