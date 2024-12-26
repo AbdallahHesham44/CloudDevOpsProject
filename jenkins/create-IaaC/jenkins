@@ -48,6 +48,9 @@ pipeline {
 
         stage('Run Ansible') {
             steps {
+                sh "pwd "
+                sh "ls "
+
                 dir('../ansible') {
                     ansiblePlaybook credentialsId: 'ssh-key	', inventory: 'inventory', playbook: 'playbook.yml'
                 }
