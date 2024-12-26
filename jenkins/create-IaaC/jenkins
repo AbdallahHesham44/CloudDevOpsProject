@@ -1,7 +1,7 @@
 pipeline {
     agent any
-  environment {
-        ec2_ip = "" // Define as a global variable
+    environment {
+        ec2_ip = ""  // Define as a global variable
     }
     stages {
         stage('Checkout Code') {
@@ -38,39 +38,35 @@ pipeline {
             steps {
                 script {
                     echo 'Waiting for resources to initialize...'
-                    sleep(time: 3, unit: 'SECONDS')
+                    sleep(time: 3, unit: 'MINUTES')  // Adjusted to wait for 3 minutes
                 }
             }
         }
-
-      
-
 
         stage('Run Ansible') {
             steps {
                 dir('ansible') {
-ansiblePlaybook(
-    credentialsId: 'ssh-key', 
-    inventory: 'inventory', 
-    playbook: 'playbook.yml',
-    additionalOptions: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
-)
-
-                sh """
-                    ls
-                   // chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
-                    //ansible-playbook playbook.yml -i inventory --private-key /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key -u ubuntu -e "ansible_ssh_extra_args='-o StrictHostKeyChecking=no'"
-                """
+                    ansiblePlaybook(
+                        credentialsId: 'ssh-key', 
+                        inventory: 'inventory', 
+                        playbook: 'playbook.yml',
+                        additionalOptions: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
+                    )
+                    // Example shell block if you need to run additional commands
+                    sh """
+                        ls
+                        # chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
+                        # ansible-playbook playbook.yml -i inventory --private-key /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key -u ubuntu -e "ansible_ssh_extra_args='-o StrictHostKeyChecking=no'"
+                    """
                 }
             }
         }
-    
-}
+    }
     post {
         always {
-           // archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
-           // cleanWs()
-            sh "  echo 'clean'  "
+            // archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
+            // cleanWs()
+            sh "echo 'clean'"
         }
     }
 }
