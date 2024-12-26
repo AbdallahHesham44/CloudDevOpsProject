@@ -47,11 +47,15 @@ pipeline {
                     script {
                         def ec2_ip = sh(script: 'terraform output -raw ec2_public_ip', returnStdout: true).trim()
                         echo "EC2 Public IP: ${ec2_ip}"
-                        writeFile file: 'inventory', text: "${ec2_ip} ansible_user=ec2-user ansible_ssh_private_key_file=/path/to/your/private/key"
-                    }
+                 withCredentials([file(credentialsId: 'ssh-key', variable: 'SSH_KEY_PATH')]) {
+                    // Create Ansible inventory file dynamically
+                    writeFile file: 'inventory', text: """
+                    ${ec2_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY_PATH}
+                    """                    }
                 }
             }
         }
+}
 
         stage('Run Ansible') {
             steps {
