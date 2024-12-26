@@ -51,7 +51,7 @@ pipeline {
                 sh "pwd "
                 sh "ls "
 
-                dir('../ansible') {
+                dir('ansible') {
                     ansiblePlaybook credentialsId: 'ssh-key	', inventory: 'inventory', playbook: 'playbook.yml'
                 }
             }
