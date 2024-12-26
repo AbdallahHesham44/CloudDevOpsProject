@@ -66,9 +66,9 @@ pipeline {
     }
     post {
         always {
-            // archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
-            // cleanWs()
-            sh "echo 'clean'"
+             archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
+             cleanWs()
+           
         }
     }
 }
