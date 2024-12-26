@@ -48,9 +48,9 @@ pipeline {
                         //def ec2_ip = sh(script: 'terraform output -raw ec2_public_ip', returnStdout: true).trim()
                         
                 dir('ansible'){
-                 withCredentials([file(credentialsId: 'ssh-key', variable: 'SSH_KEY_PATH')]) {
                     // Create Ansible inventory file dynamically
-                    writeFile file: 'inventory', text: """
+                    writeFile file: 'ansible/inventory', text: """
+                   
                     [web]\n${ec2_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY_PATH}
                         
                     """                 
@@ -64,7 +64,7 @@ pipeline {
         stage('Run Ansible') {
             steps {
                 dir('ansible') {
-                    ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
+                    ansiblePlaybook credentialsId: 'ssh-key	', inventory: 'inventory', playbook: 'playbook.yml'
                 }
             }
         }
