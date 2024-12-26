@@ -47,6 +47,7 @@ withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
         }
         }
 }
+}
 
         stage('Run Ansible') {
             steps {
