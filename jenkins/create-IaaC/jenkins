@@ -59,7 +59,7 @@ pipeline {
                 }
             }
         }
-}
+
 
         stage('Run Ansible') {
             steps {
@@ -68,8 +68,8 @@ pipeline {
                 }
             }
         }
-    }
-
+    
+}
     post {
         always {
             archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
