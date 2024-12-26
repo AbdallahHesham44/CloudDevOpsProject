@@ -1,94 +1,61 @@
-//@Library('shared-library') _ // Import the shared library configured in Jenkins
-
 pipeline {
-    agent any 
-  //  {   
-//     label 'docker-slave' // Jenkins slave label configured to run this pipeline
-//    }
+    agent any
 
-    environment {
-        REGISTRY = "https://github.com/Ibrahim-Adell/FinalProjectCode.git" // Replace with your container registry URL
-        IMAGE_NAME = "application-image"
-        SONARQUBE_ENV = "SonarQube" // SonarQube environment defined in Jenkins
-        OPENSHIFT_CONFIG_FILE = "kubeconfig" // Path to OpenShift kubeconfig
+    tools {
+        // Make sure the name matches the Gradle installation in Jenkins
+        gradle 'Gradle 8.12' // Use the correct Gradle name configured in Jenkins
     }
 
     stages {
-        stage('Git Checkout') {
+        stage('Checkout') {
             steps {
-                checkout scm
+                // Checkout the repository
+                git branch: 'main', url: 'https://github.com/Ibrahim-Adell/FinalProjectCode.git'
             }
         }
 
-        stage('Unit Test') {
+        stage('Set Permissions') {
             steps {
-                script {
-                    echo 'Running unit tests...'
-                    sh 'mvn test'
-                }
+                // Ensure the gradlew script has execute permissions
+                sh 'chmod +x ./gradlew'
             }
         }
 
-        stage('Build JAR') {
+        stage('Build') {
             steps {
-                script {
-                    echo 'Building JAR...'
-                    sh 'mvn package -DskipTests'
-                }
+                // Build the project using Gradle wrapper
+                sh './gradlew clean build'
             }
         }
 
-        stage('SonarQube Test') {
+        stage('Test') {
             steps {
-                script {
-                    echo 'Running SonarQube analysis...'
-                    withSonarQubeEnv(SONARQUBE_ENV) {
-                        sh 'mvn sonar:sonar'
-                    }
-                }
+                // Run tests
+                sh './gradlew test'
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:latest ."
-                }
+        stage('Deploy') {
+            when {
+                branch 'main'
             }
-        }
-
-        stage('Push Image into Registry') {
             steps {
-                script {
-                    echo 'Pushing Docker image to registry...'
-                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
-                }
-            }
-        }
-
-        stage('Deploy on OpenShift') {
-            steps {
-                script {
-                    echo 'Deploying application to OpenShift...'
-                    sh """
-                    export KUBECONFIG=${OPENSHIFT_CONFIG_FILE}
-                    oc apply -f deployment.yml
-                    """
-                }
+                // Run deploy command
+                sh './gradlew deploy'
             }
         }
     }
 
     post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
         success {
-            echo 'Pipeline completed successfully.'
+            echo 'Build successful!'
         }
         failure {
-            echo 'Pipeline failed. Check logs for details.'
-        }
-        always {
-            cleanWs() // Clean workspace after each run
+            echo 'Build failed.'
         }
     }
 }
