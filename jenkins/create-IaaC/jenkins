@@ -1,12 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        TF_VAR_AWS_ACCESS_KEY = credentials('aws-access-key') // AWS credentials ID in Jenkins
-        TF_VAR_AWS_SECRET_KEY = credentials('aws-secret-key') // AWS credentials ID in Jenkins
-        ANSIBLE_PRIVATE_KEY = credentials('ansible-ssh-key') // Private key for SSH access
-    }
-
+ 
     stages {
         stage('Checkout Code') {
             steps {
@@ -14,47 +9,49 @@ pipeline {
             }
         }
 
-        stage('Terraform Init') {
+       stage('Terraform Init') {
             steps {
                 dir('terraform'){
-
-                sh 'terraform init'
+                withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                    script {
+                        env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
+                        env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
+                        sh 'terraform init'
+                    }
                 }
             }
         }
-
+}
         stage('Terraform Apply') {
             steps {
                 dir('terraform'){
+ withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
                 sh 'terraform apply -auto-approve'
             }
-            }
-        }
- stage('Sleep for 3 Minutes') {
-            steps {
-                script {
-                    echo 'Waiting for resources to initialize...'
-                    sleep(time: 3, unit: 'MINUTES')
-                }
+}
             }
         }
 
         stage('Get EC2 IP') {
             steps {
+withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
              dir('terraform'){
-                script {
-                    def terraformOutput = sh(script: 'terraform output -json', returnStdout: true)
-                    def publicIp = readJSON(text: terraformOutput).ec2_public_ip.value
-                    writeFile file: 'inventory', text: "[web]\n${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=${env.ANSIBLE_PRIVATE_KEY}"
-                }
+                // Capture the EC2 public IP output from Terraform
+                    def ec2_ip = sh(script: 'terraform output -raw ec2_public_ip', returnStdout: true).trim()
+                    
+                    // Pass the IP to Ansible
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                        sh "ansible-playbook -i '${ec2_ip},' playbook.yml"
+
             }
         }
         }
+}
 
         stage('Run Ansible') {
             steps {
                  dir('ansible') {
-                    ansiblePlaybook credentialsId: 'ansible-ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
+                    ansiblePlaybook credentialsId: 'ssh-key', inventory: 'inventory', playbook: 'playbook.yml'
                 }       
                      }
         }
