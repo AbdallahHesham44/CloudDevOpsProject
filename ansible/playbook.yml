@@ -4,7 +4,7 @@
   roles:
     - git
     - common
-    - docker
+    #- docker
     - java
     - jenkins
     - sonarqube
