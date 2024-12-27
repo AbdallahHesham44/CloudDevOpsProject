@@ -1,5 +1,5 @@
 region              = "us-west-1"
-s3_bucket_name      = "final-bukect-1"
+s3_bucket_name      = "abdallah-hesham-bucket-backend"
 dynamodb_table_name = "ivolvegp-table"
 vpc_name            = "ivolve"
 vpc_cidr            = "10.0.0.0/16"
