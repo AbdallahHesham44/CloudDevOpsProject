@@ -66,6 +66,10 @@ pipeline {
     }
     post {
         always {
+               dir('terraform') {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                        sh 'terraform destroy -auto-approve'
+                    }
              archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
              cleanWs()
            
