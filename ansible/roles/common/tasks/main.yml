@@ -1,4 +1,7 @@
-- name: Update and upgrade apt packages
-  apt:
-    update_cache: yes
-    upgrade: dist
+- name: Run sudo apt update
+  become: true
+  command: apt update
+  register: update_result
+  changed_when: "'Fetched' in update_result.stdout"  # Check if new packages are fetched
+  tags:
+    - update
