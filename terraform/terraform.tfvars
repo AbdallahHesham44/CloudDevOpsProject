@@ -30,9 +30,9 @@ security_group_rules = [
     cidr_blocks = ["0.0.0.0/0"]
   }
 ]
-ami_id               = "ami-0e2c8caa4b6378d8c"
-instance_type        = "t2.micro"
-ec2_name             = "ivolve"
+ami_id               = "ami-0657605d763ac72a8"
+instance_type        = "t3.xlarge"
+ec2_name             = "abdallah-sonar"
 cloudwatch_log_group  = "log-group"
 cloudwatch_log_stream = "log-stream"
 cloudwatch_config_ssm_key = "cloudwatch-config"
