@@ -13,7 +13,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
-                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
                         script {
                             env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
                             env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
@@ -27,7 +27,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform') {
-                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
                         sh 'terraform apply -auto-approve'
                     }
                 }
@@ -67,7 +67,7 @@ pipeline {
     post {
         always {
                dir('terraform') {
-                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-west-1')]) {
+                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
                         sh 'terraform destroy -auto-approve'
                     }
 }
