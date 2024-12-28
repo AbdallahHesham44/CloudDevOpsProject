@@ -1,4 +1,4 @@
-region              = "us-east-2"
+region              = "us-east-1"
 s3_bucket_name      = "abdallah-hesham-bucket-backend"
 dynamodb_table_name = "ivolvegp-table"
 vpc_name            = "ivolve"
@@ -6,12 +6,12 @@ vpc_cidr            = "10.0.0.0/16"
 subnets = [
   {
     cidr = "10.0.1.0/24"
-    availability_zone = "us-east-2a"
+    availability_zone = "us-east-1a"
     map_public_ip_on_launch = true
   },
   {
     cidr = "10.0.2.0/24"
-    availability_zone = "us-east-2b"
+    availability_zone = "us-east-1b"
     map_public_ip_on_launch = true
   }
 ]
