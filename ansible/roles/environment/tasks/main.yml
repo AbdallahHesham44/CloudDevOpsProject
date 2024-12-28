@@ -9,12 +9,3 @@
     - SONAR_HOME=/opt/sonarqube
     - PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/sonarqube/bin"
 
-
-- name: Append SonarQube to PATH
-  ansible.builtin.lineinfile:
-    path: /etc/environment
-    regexp: '^PATH='
-    line: 'PATH="$PATH:/opt/sonarqube/bin"'
-    state: present
-  become: yes
-
