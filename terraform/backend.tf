@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "abdallah-hesham-bucket-backend"
+    bucket         = "abdallah-hesham-bucket-backend-2"
     key            = "terraform/state.tfstate"
-    region         = "us-east-1"
+    region         = "us-east-2"
     encrypt        = true
   }
 }
