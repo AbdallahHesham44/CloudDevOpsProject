@@ -1,0 +1,19 @@
+- name: Set environment variables for SonarQube
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    create: yes
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+    - SONAR_HOME="/opt/sonarqube"
+  become: yes
+
+- name: Append SonarQube to PATH
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^PATH='
+    line: 'PATH="$PATH:/opt/sonarqube/bin"'
+    state: present
+  become: yes
+
