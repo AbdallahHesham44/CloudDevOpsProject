@@ -2,22 +2,11 @@
 
 Terraform modules are a fundamental component of Terraform's architecture, enabling you to organize, reuse, and manage your infrastructure as code (IaC) efficiently. Instead of writing all your Terraform code in a single file, modules allow you to encapsulate and abstract away common configurations, making your Terraform code more modular, reusable, and maintainable.
 
-# Benefits of Using Terraform Modules⭐
-
-1-Reusability: Modules allow you to define common infrastructure components once and reuse them across multiple environments or projects. This reduces duplication and ensures consistency in your infrastructure.
-
-2- Organization: By breaking down your Terraform configuration into modules, you can organize your code in a logical and manageable way. This makes it easier to navigate, understand, and maintain your infrastructure code.
-
-3- Abstraction: Modules provide a way to encapsulate implementation details, exposing only the necessary inputs and outputs. This abstraction simplifies the usage of complex infrastructure components and reduces the potential for errors.
-
-4- Maintainability: With modules, you can update and maintain your infrastructure code more easily. Changes to a module can be propagated to all places where the module is used, ensuring consistency and reducing the effort required to make updates.
-
-5-Collaboration: Modules make it easier for teams to collaborate on infrastructure code. Each team member can work on different modules independently, reducing conflicts and improving productivity.
-
 
 # Terraform Structure🏗️
 
-<img width="600" alt="tree final terraform-marwanhesham" src=![image](https://github.com/user-attachments/assets/97428ec4-b4dc-40a0-9f4e-fc3fbfb368ca)
+![image](https://github.com/user-attachments/assets/88c889fa-8081-45b0-bd3f-aaf4a77f9115)
+
  />
 
 ## Create Terraform Modules📚
