@@ -1,3 +1,5 @@
+@Library('your-shared-library-name') _  // Reference the shared library
+
 pipeline {
     agent any
     environment {
@@ -6,30 +8,24 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/AbdallahHesham44/CloudDevOpsProject.git'
+                script {
+                    checkoutCode()  // Call the checkoutCode function from shared library
+                }
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir('terraform') {
-                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
-                        script {
-                            env.TF_VAR_AWS_ACCESS_KEY = env.AWS_ACCESS_KEY_ID
-                            env.TF_VAR_AWS_SECRET_KEY = env.AWS_SECRET_ACCESS_KEY
-                            sh 'terraform init'
-                        }
-                    }
+                script {
+                    terraformInit()  // Call the terraformInit function from shared library
                 }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform') {
-                    withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
-                        sh 'terraform apply -auto-approve'
-                    }
+                script {
+                    terraformApply()  // Call the terraformApply function from shared library
                 }
             }
         }
@@ -37,40 +33,23 @@ pipeline {
         stage('Sleep for 3 Minutes') {
             steps {
                 script {
-                    echo 'Waiting for resources to initialize...'
-                    sleep(time: 3, unit: 'MINUTES')  // Adjusted to wait for 3 minutes
+                    sleepForResources()  // Call the sleepForResources function from shared library
                 }
             }
         }
 
         stage('Run Ansible') {
             steps {
-                dir('ansible') {
-                ansiblePlaybook(
-                    credentialsId: 'ssh-key',
-                    inventory: 'inventory',
-                    playbook: 'playbook.yml',
-                    extras: '-e "ansible_ssh_extra_args=\'-o StrictHostKeyChecking=no\'"'
-
-                )
-
-                    // Example shell block if you need to run additional commands
-                    sh """
-                        ls
-                        # chmod 600 /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key
-                        # ansible-playbook playbook.yml -i inventory --private-key /var/lib/jenkins/workspace/Run-Infra/ansible/ssh15574834832166733192.key -u ubuntu -e "ansible_ssh_extra_args='-o StrictHostKeyChecking=no'"
-                    """
+                script {
+                    runAnsible()  // Call the runAnsible function from shared library
                 }
             }
         }
     }
     post {
         always {
-          
-
-             archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
-             cleanWs()
-           
+            archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
+            cleanWs()
         }
     }
 }
