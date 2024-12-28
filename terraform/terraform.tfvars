@@ -38,7 +38,7 @@ security_group_rules = [
     from_port   = 9000
     to_port     = 9000
     protocol    = "tcp"
-    cidr_blocks = ["${chomp(data.http.my_ip.body)}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 ]
 ami_id               = "ami-036841078a4b68e14"
