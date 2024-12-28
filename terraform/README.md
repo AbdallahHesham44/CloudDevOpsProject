@@ -17,7 +17,8 @@ Terraform modules are a fundamental component of Terraform's architecture, enabl
 
 # Terraform Structure🏗️
 
-<img width="600" alt="tree final terraform-marwanhesham" src="https://github.com/user-attachments/assets/f5d1114a-8d50-4f02-a68c-a0a25974c55a" />
+<img width="600" alt="tree final terraform-marwanhesham" src=![image](https://github.com/user-attachments/assets/97428ec4-b4dc-40a0-9f4e-fc3fbfb368ca)
+ />
 
 ## Create Terraform Modules📚
 
