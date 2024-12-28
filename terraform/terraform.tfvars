@@ -29,6 +29,13 @@ security_group_rules = [
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+,
+  {
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 ]
 ami_id               = "ami-036841078a4b68e14"
 instance_type        = "t3.xlarge"
