@@ -2,45 +2,83 @@ pipeline {
     agent any
 
     tools {
-        // Make sure the name matches the Gradle installation in Jenkins
-        gradle 'Gradle 8.12' // Use the correct Gradle name configured in Jenkins
+        gradle 'Gradle 8.12' // Ensure this matches your Jenkins setup
+    }
+
+    environment {
+        DOCKER_IMAGE = 'docker.io/abdallah1312/docckerimage:latest'
+        kubeconfigPath = /home/ubuntu/config
+        
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the repository
-                git branch: 'main', url: 'https://github.com/Ibrahim-Adell/FinalProjectCode.git'
+                git branch: 'main', url: 'https://github.com/AbdallahHesham44/CloudDevOpsProject.git'
             }
         }
 
         stage('Set Permissions') {
+            dir(App){
             steps {
-                // Ensure the gradlew script has execute permissions
                 sh 'chmod +x ./gradlew'
             }
-        }
-
-        stage('Build') {
-            steps {
-                // Build the project using Gradle wrapper
-                sh './gradlew clean build'
-            }
+}
         }
 
         stage('Test') {
+           dir(App){
             steps {
-                // Run tests
                 sh './gradlew test'
             }
         }
+}
 
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
+        stage('Build') {
+           dir(App){
             steps {
-                // Run deploy command
+                sh './gradlew clean build'
+            }
+        }}
+
+        stage('SonarQube Analysis') {
+                     dir(App){
+            steps {
+                echo "Running SonarQube analysis"
+                sh './gradlew sonarqube'
+            }
+}
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo "Building Docker image: $DOCKER_IMAGE"
+                sh "docker build -t $DOCKER_IMAGE ."
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                echo "Pushing Docker image to Docker Hub"
+                sh "docker push $DOCKER_IMAGE"
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo "Deploying the application to Kubernetes"
+                sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
+                echo "Deploying application"
                 sh './gradlew deploy'
             }
         }
@@ -48,7 +86,6 @@ pipeline {
 
     post {
         always {
-            // Clean up workspace
             cleanWs()
         }
         success {
@@ -59,4 +96,3 @@ pipeline {
         }
     }
 }
-
