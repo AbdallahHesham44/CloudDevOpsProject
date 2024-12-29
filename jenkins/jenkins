@@ -20,7 +20,7 @@ pipeline {
 
         stage('Set Permissions') {
             steps {
-                dir('App') { // Use the correct directory name if applicable
+                dir('App') { // Ensure this is the correct directory
                     sh 'chmod +x ./gradlew'
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                dir('App') { // Use the correct directory name if applicable
+                dir('App') { // Ensure this is the correct directory
                     sh './gradlew test'
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('App') { // Use the correct directory name if applicable
+                dir('App') { // Ensure this is the correct directory
                     sh './gradlew clean build'
                 }
             }
@@ -44,7 +44,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                dir('App') { // Use the correct directory name if applicable
+                dir('App') { // Ensure this is the correct directory
                     echo "Running SonarQube analysis"
                     sh './gradlew sonarqube'
                 }
@@ -74,7 +74,7 @@ pipeline {
                 sh "docker push $DOCKER_IMAGE"
             }
         }
-        
+
         stage('Deploy') {
             steps {
                 echo "Deploying the application to Kubernetes"
