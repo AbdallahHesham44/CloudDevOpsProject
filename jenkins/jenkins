@@ -27,11 +27,11 @@ pipeline {
             }}
         }
 
-        stage('Test') {
+        stage('build') {
             steps {
 dir('App') {
               
-                    sh './gradlew test'
+                    sh './gradlew build'
                 
             }}
         }
