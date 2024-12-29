@@ -14,38 +14,16 @@ pipeline {
             }
         }
 
-        stage('Terraform Init') {
+        stage('Terraform destroy') {
             steps {
                 script {
-                    terraformInit()  // Call the terraformInit function from shared library
+                    terraformdestroy()  // Call the terraformInit function from shared library
                 }
             }
         }
 
-        stage('Terraform Apply') {
-            steps {
-                script {
-                    terraformApply()  // Call the terraformApply function from shared library
-                }
-            }
-        }
 
-        stage('Sleep for 3 Minutes') {
-            steps {
-                script {
-                    sleepForResources()  // Call the sleepForResources function from shared library
-                }
-            }
-        }
-
-        stage('Run Ansible') {
-            steps {
-                script {
-                    runAnsible()  // Call the runAnsible function from shared library
-                }
-            }
-        }
-    }
+       
 post {
     always {
         script {
