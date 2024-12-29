@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'docker.io/abdallah1312/docckerimage:latest'
-        kubeconfigPath = /home/ubuntu/config
-        
+        kubeconfigPath = '/home/ubuntu/config'
+        deploymentYaml = 'Kubernetes/deployment.yaml' // Define your Kubernetes deployment YAML path
     }
 
     stages {
@@ -19,35 +19,36 @@ pipeline {
         }
 
         stage('Set Permissions') {
-            dir(App){
             steps {
-                sh 'chmod +x ./gradlew'
+                dir('App') { // Use the correct directory name if applicable
+                    sh 'chmod +x ./gradlew'
+                }
             }
-}
         }
 
         stage('Test') {
-           dir(App){
             steps {
-                sh './gradlew test'
+                dir('App') { // Use the correct directory name if applicable
+                    sh './gradlew test'
+                }
             }
         }
-}
 
         stage('Build') {
-           dir(App){
             steps {
-                sh './gradlew clean build'
+                dir('App') { // Use the correct directory name if applicable
+                    sh './gradlew clean build'
+                }
             }
-        }}
+        }
 
         stage('SonarQube Analysis') {
-                     dir(App){
             steps {
-                echo "Running SonarQube analysis"
-                sh './gradlew sonarqube'
+                dir('App') { // Use the correct directory name if applicable
+                    echo "Running SonarQube analysis"
+                    sh './gradlew sonarqube'
+                }
             }
-}
         }
 
         stage('Docker Login') {
@@ -78,8 +79,6 @@ pipeline {
             steps {
                 echo "Deploying the application to Kubernetes"
                 sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
-                echo "Deploying application"
-                sh './gradlew deploy'
             }
         }
     }
