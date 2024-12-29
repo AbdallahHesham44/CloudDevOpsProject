@@ -1,4 +1,4 @@
-@Library('my-shared-library-2@main') _
+@Library('my-shared-library-2') _
 pipeline {
     agent any
 
@@ -13,15 +13,51 @@ pipeline {
     }
 
     stages {
-        checkoutCode()           // Calling the checkout stage
-        setPermissions()         // Calling the set permissions stage
-        build()                  // Calling the build stage
-        sonarQubeAnalysis()      // Calling the SonarQube analysis stage
-        dockerLogin()            // Calling the Docker login stage
-        dockerBuild()            // Calling the Docker build stage
-        dockerPush()             // Calling the Docker push stage
-        setupKubernetes()        // Calling the Kubernetes setup stage
-        deployToKind()           // Calling the deploy to Kind stage
+        stage('Checkout') {
+            steps {
+                checkoutCode() // Call the shared library function
+            }
+        }
+        stage('Set Permissions') {
+            steps {
+                setPermissions() // Call the shared library function
+            }
+        }
+        stage('Build') {
+            steps {
+                build() // Call the shared library function
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                sonarQubeAnalysis() // Call the shared library function
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                dockerLogin() // Call the shared library function
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                dockerBuild() // Call the shared library function
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                dockerPush() // Call the shared library function
+            }
+        }
+        stage('Set up Kubernetes (Kind)') {
+            steps {
+                setupKubernetes() // Call the shared library function
+            }
+        }
+        stage('Deploy to Kind') {
+            steps {
+                deployToKind() // Call the shared library function
+            }
+        }
     }
 
     post {
