@@ -29,27 +29,30 @@ pipeline {
 
         stage('Test') {
             steps {
+dir('App') {
               
                     sh './gradlew test'
                 
-            }
+            }}
         }
 
         stage('Build') {
             steps {
-              
+              dir('App') {
                     sh './gradlew clean build'
                 
             }
+}
         }
 
         stage('SonarQube Analysis') {
             steps {
-               
+               dir('App') {
                     echo "Running SonarQube analysis"
                     sh './gradlew sonarqube'
                 
             }
+}
         }
 
         stage('Docker Login') {
