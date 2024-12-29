@@ -38,7 +38,7 @@ security_group_rules = [
  
 ]
 ami_id               = "ami-036841078a4b68e14"
-instance_type        = "t3.xlarge"
+instance_type        = "t3.2xlarge"
 ec2_name             = "abdallah-sonar"
 cloudwatch_log_group  = "log-group"
 cloudwatch_log_stream = "log-stream"
