@@ -140,3 +140,160 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 
 ![image](https://github.com/user-attachments/assets/edb68873-10c7-40d7-8e6b-e58192cce3fb)
+
+
+# CI/CD Pipeline for CloudDevOpsProject 🚀
+
+This repository contains a comprehensive Jenkins pipeline for automating the CI/CD process of the **CloudDevOpsProject**. The pipeline integrates multiple tools and frameworks to ensure code quality, containerization, and deployment to Kubernetes.
+
+---
+
+## 🛠️ Tools and Technologies Used
+
+- **Jenkins**: Orchestrates the CI/CD pipeline.
+- **Gradle**: Build and dependency management.
+- **SonarQube**: Static code analysis.
+- **Docker**: Containerization of the application.
+- **Kubernetes**: Deployment and orchestration.
+- **AWS**: Cloud infrastructure.
+- **Terraform**: Infrastructure as Code (IaC).
+
+---
+
+## 📋 Pipeline Overview
+
+The pipeline includes the following stages:
+
+1. **Checkout**: Retrieves the latest code from the Git repository.
+2. **Set Permissions**: Ensures the necessary permissions for Gradle.
+3. **Build**: Compiles the application using Gradle.
+4. **SonarQube Analysis**: Performs static code analysis to ensure code quality.
+5. **Docker Login**: Authenticates with Docker Hub.
+6. **Docker Build**: Builds the Docker image for the application.
+7. **Docker Push**: Pushes the Docker image to Docker Hub.
+8. **Set up Kubernetes (Kind)**: Sets up the Kubernetes cluster using Kind.
+9. **Deploy to Kind**: Deploys the application to the Kubernetes cluster.
+
+---
+
+## 🔧 Prerequisites
+
+- Jenkins installed and configured.
+- Gradle installed in Jenkins.
+- Access to Docker Hub credentials in Jenkins.
+- SonarQube server configured in Jenkins.
+- Kubernetes installed (Kind or Minikube).
+- AWS credentials for Terraform and cloud resource setup.
+
+---
+
+## ⚙️ Configuration
+
+### Jenkins Pipeline Configuration
+
+```groovy
+@Library('my-shared-library-2') _
+pipeline {
+    agent any
+
+    tools {
+        gradle 'Gradle'
+    }
+
+    environment {
+        DOCKER_IMAGE = 'docker.io/abdallah1312/ivolve-app:latest'
+        kubeconfigPath = '/home/abdallah/.kube/config'
+        deploymentYaml = 'Kubernetes/deployment.yaml'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkoutCode()
+            }
+        }
+        stage('Set Permissions') {
+            steps {
+                setPermissions()
+            }
+        }
+        stage('Build') {
+            steps {
+                build()
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                sonarQubeAnalysis()
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                dockerLogin()
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                dockerBuild()
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                dockerPush()
+            }
+        }
+        stage('Set up Kubernetes (Kind)') {
+            steps {
+                setupKubernetes()
+            }
+        }
+        stage('Deploy to Kind') {
+            steps {
+                deployToKind()
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Build successful!'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+}
+```
+
+---
+
+## 🚑 Troubleshooting
+
+- **Invalid Parameter Error**: Ensure the parameters in shared library functions are correct.
+- **Permission Issues**: Verify file permissions for `gradlew` and other scripts.
+- **SonarQube Connection Failure**: Check the SonarQube server URL and credentials.
+- **Docker Push Error**: Verify Docker Hub credentials and repository access.
+- **Kubernetes Deployment Errors**: Check the `kubeconfig` file and deployment YAML.
+
+---
+
+## 📧 Contact
+
+For any questions or issues, feel free to reach out:
+
+- **Author**: Abdallah Hesham
+- **Email**: [your-email@example.com](mailto:your-email@example.com)
+- **GitHub**: [AbdallahHesham44](https://github.com/AbdallahHesham44)
+
+---
+
+## 🎨 Visual Workflow
+
+![CI/CD Workflow Diagram](./diagram.png)
+
+This diagram illustrates the integration of various tools and stages within the CI/CD pipeline.
+
+
