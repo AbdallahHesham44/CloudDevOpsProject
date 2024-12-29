@@ -20,10 +20,11 @@ pipeline {
 
         stage('Set Permissions') {
             steps {
+                 dir('App') {
                // Ensure this is the correct directory
                     sh 'chmod +x ./gradlew'
                 
-            }
+            }}
         }
 
         stage('Test') {
