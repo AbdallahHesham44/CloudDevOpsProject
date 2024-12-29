@@ -29,6 +29,7 @@ test {
 sonarqube {
     properties {
         property "sonar.projectKey", "sonar-server"  
+        property "sonar.projectName", "ivolve-app1"
         property "sonar.host.url", "http://3.21.232.30:9000" 
         property "sonar.login", "squ_52e7553c8da930a8942112ac8eab4dc93b203ff6"  
     }
