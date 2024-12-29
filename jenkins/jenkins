@@ -41,7 +41,7 @@ dir('App') {
             steps {
                dir('App') {
                     echo "Running SonarQube analysis"
-                    sh './gradlew sonar'
+                    sh './gradlew sonar --stacktrace'
                 
             }
 }
