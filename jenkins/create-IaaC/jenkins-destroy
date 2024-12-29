@@ -21,12 +21,13 @@ pipeline {
                 }
             }
         }
-}
-}
-        stage('Terraform detroy') {
+
+        stage('Terraform Destroy') {
             steps {
                 script {
-                    terraformdestroy()  // Call the terraformApply function from shared library
+                    terraformdestroy()  // Call the terraformDestroy function from shared library
                 }
             }
         }
+    }
+}
