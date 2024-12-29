@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'docker.io/abdallah1312/ivolve-app:latest'
-        kubeconfigPath = '~/.kube/config'
+        kubeconfigPath = '/home/abdallah/.kube/config'
         deploymentYaml = 'Kubernetes/deployment.yaml' // Define your Kubernetes deployment YAML path
     }
 
@@ -73,11 +73,27 @@ dir('App') {
                 sh "docker push $DOCKER_IMAGE"
             }
         }
+  stage('Set up Kubernetes (Kind)') {
+            steps {
+                script {
+                    // Create a Kind cluster if it doesn't exist
+                    sh 'kind create cluster --name $KIND_CLUSTER_NAME || true'
+                    
+                    // Export the kubeconfig for the Kind cluster
+                    sh 'export KUBEVERSION=$(kind get kubeconfig-path --name=$KIND_CLUSTER_NAME)'
+                    sh 'export KUBECONFIG=$KUBEVERSION'
+                }
+            }
+        }
 
+                    
+                    
+                   
         stage('Deploy') {
             steps {
                 echo "Deploying the application to Kubernetes"
-                sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
+                // sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
+                    sh 'kubectl apply -f Kubernetes/deployment.yaml'
             }
         }
     }
