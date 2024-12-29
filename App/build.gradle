@@ -32,7 +32,7 @@ test {
 sonarqube {
     properties {
         property "sonar.projectKey", "sonar-server"  
-        property "sonar.host.url", "http://54.83.82.67:9000" 
-        property "sonar.login", "squ_b62dbd1c50ed2068982313bea2868417b72bc39a"  
+        property "sonar.host.url", "http://3.21.232.30:9000" 
+        property "sonar.login", "squ_52e7553c8da930a8942112ac8eab4dc93b203ff6"  
     }
 }
