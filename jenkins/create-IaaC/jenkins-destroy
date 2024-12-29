@@ -1,0 +1,32 @@
+@Library('my-shared-library@main') _  // Reference the shared library
+
+pipeline {
+    agent any
+    environment {
+        ec2_ip = ""  // Define as a global variable
+    }
+    stages {
+        stage('Checkout Code') {
+            steps {
+                script {
+                    checkoutCode()  // Call the checkoutCode function from shared library
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    terraformInit()  // Call the terraformInit function from shared library
+                }
+            }
+        }
+}
+}
+        stage('Terraform detroy') {
+            steps {
+                script {
+                    terraformdestroy()  // Call the terraformApply function from shared library
+                }
+            }
+        }
