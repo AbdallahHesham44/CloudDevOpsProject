@@ -1,6 +1,6 @@
 // vars/terraformApply.groovy
 def call() {
-    stage('Terraform Apply') {
+    stage('Terraform destroy') {
         dir('terraform') {
             withCredentials([aws(credentialsId: 'aws-cred', region: 'us-east-2')]) {
                 sh 'terraform destroy -auto-approve'
