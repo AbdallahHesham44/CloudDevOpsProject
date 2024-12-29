@@ -1,4 +1,0 @@
-
-[slave]
-ec2-3-101-104-236.us-west-1.compute.amazonaws.com  ansible_user=ubuntu ansible_ssh_private_key_file=/home/abdallah/ansiblel/abdallah-jenkins-key.pem
-
