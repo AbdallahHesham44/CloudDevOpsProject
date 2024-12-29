@@ -46,10 +46,15 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            archiveArtifacts artifacts: 'inventory, terraform/terraform.tfstate', fingerprint: true
-            cleanWs()
+post {
+    always {
+        script {
+            echo 'Checking workspace files...'
+            sh 'ls -l'  // Check if files are present
         }
+        archiveArtifacts artifacts: 'ansible/inventory, terraform/terraform.tfstate', fingerprint: true
+        cleanWs()
     }
+}
+
 }
