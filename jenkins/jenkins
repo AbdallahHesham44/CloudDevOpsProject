@@ -89,16 +89,19 @@ dir('App') {
                     
                     
                    
-        stage('Deploy') {
+ 
+        stage('Deploy to Kind') {
             steps {
-                dir('Kubernetes'){ 
-                echo "Deploying the application to Kubernetes"
-                    sh 'ls'
-                // sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
-                    sh 'kubectl apply -f deployment.yaml --validate=false'
+                script {
+                    // Ensure that the KUBECONFIG is pointing to the correct Kind cluster
+                    sh 'export KUBECONFIG=$HOME/.kube/config'
+
+                    // Deploy the application
+                    sh 'kubectl apply -f Kubernetes/deployment.yaml --validate=false'
+                }
             }
         }
-}
+    
     }
 
     post {
