@@ -1,4 +1,12 @@
----
+# Update APT repositories and cache
+- name: Run sudo apt update
+  become: true
+  command: apt update
+  register: update_result
+  changed_when: "'Hit' not in update_result.stdout"
+  tags:
+    - update
+
 # Install required packages
 - name: Install required packages
   apt:
@@ -61,8 +69,8 @@
   become: true
   become_user: postgres
   postgresql_user:
-    name: 'sonar'
-    password: 'ivolve'
+    name: "{{ psql_sonar_username }}"
+    password: "{{ psql_sonar_password }}"
     role_attr_flags: CREATEDB,SUPERUSER,CREATEROLE
     encrypted: yes
     state: present
@@ -73,7 +81,7 @@
   become_user: postgres
   postgresql_db:
     name: sonar
-    owner: sonar
+    owner: "{{ psql_sonar_username }}"
     encoding: UTF8
     state: present
 
@@ -88,8 +96,8 @@
 # Download SonarQube
 - name: Download SonarQube
   ansible.builtin.get_url:
-    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.1.69595.zip
-    dest: /opt/sonarqube-9.9.1.69595.zip
+    url: "https://binaries.sonarsource.com/Distribution/sonarqube/{{ sonarqube_version }}.zip"
+    dest: "/opt/{{ sonarqube_version }}.zip"
     mode: '0644'
   register: get_sonar
   tags:
@@ -98,7 +106,7 @@
 # Extract SonarQube
 - name: Extract SonarQube
   ansible.builtin.unarchive:
-    src: /opt/sonarqube-9.9.1.69595.zip
+    src: "/opt/{{ sonarqube_version }}.zip"
     dest: /opt
     remote_src: yes
   tags:
@@ -117,14 +125,14 @@
   ansible.builtin.user:
     name: sonar
     group: sonar
-    home: /opt/sonarqube-9.9.1.69595
+    home: "/opt/{{ sonarqube_version }}"
   tags:
     - change-ownership-sonar
 
 # Recursively change ownership of the /opt/{{ sonarqube_version }} directory
-- name: Recursively change ownership of the /opt/sonarqube-9.9.1.69595 directory
+- name: Recursively change ownership of the /opt/{{ sonarqube_version }} directory
   ansible.builtin.file:
-    path: /opt/sonarqube-9.9.1.69595
+    path: "/opt/{{ sonarqube_version }}"
     state: directory
     recurse: yes
     owner: sonar
@@ -135,13 +143,13 @@
 # SonarQube configuration
 - name: SonarQube configuration
   blockinfile:
-    path: /opt/sonarqube-9.9.1.69595/conf/sonar.properties
+    path: "/opt/{{ sonarqube_version }}/conf/sonar.properties"
     state: present
     block: |
-      sonar.jdbc.username=sonar
-      sonar.jdbc.password=ivolve
+      sonar.jdbc.username={{ psql_sonar_username }}
+      sonar.jdbc.password={{ psql_sonar_password }}
       sonar.web.host=0.0.0.0
-      sonar.web.port=9000
+      sonar.web.port={{ sonar_web_port }}
       sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonar
       sonar.web.javaAdditionalOpts=-server
       sonar.log.level=INFO
@@ -160,8 +168,8 @@
       After=syslog.target network.target
       [Service]
       Type=forking
-      ExecStart=/opt/sonarqube-9.9.1.69595/bin/linux-x86-64/sonar.sh start
-      ExecStop=/opt/sonarqube-9.9.1.69595/bin/linux-x86-64/sonar.sh stop
+      ExecStart=/opt/{{ sonarqube_version }}/bin/linux-x86-64/sonar.sh start
+      ExecStop=/opt/{{ sonarqube_version }}/bin/linux-x86-64/sonar.sh stop
       User=sonar
       Group=sonar
       Restart=always
@@ -169,6 +177,21 @@
       LimitNPROC=4096
       [Install]
       WantedBy=multi-user.target
-  notify:
+  notify: 
     - Start Sonar
+- name: Start PostgreSQL
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
 
+- name: Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
+
+- name: Start Sonar
+  systemd:
+    name: sonar
+    state: started
+    enabled: yes
