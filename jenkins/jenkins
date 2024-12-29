@@ -20,34 +20,34 @@ pipeline {
 
         stage('Set Permissions') {
             steps {
-                dir('App') { // Ensure this is the correct directory
+               // Ensure this is the correct directory
                     sh 'chmod +x ./gradlew'
-                }
+                
             }
         }
 
         stage('Test') {
             steps {
-                dir('App') { // Ensure this is the correct directory
+              
                     sh './gradlew test'
-                }
+                
             }
         }
 
         stage('Build') {
             steps {
-                dir('App') { // Ensure this is the correct directory
+              
                     sh './gradlew clean build'
-                }
+                
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                dir('App') { // Ensure this is the correct directory
+               
                     echo "Running SonarQube analysis"
                     sh './gradlew sonarqube'
-                }
+                
             }
         }
 
