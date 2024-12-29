@@ -36,14 +36,6 @@ dir('App') {
             }}
         }
 
-        stage('Build') {
-            steps {
-              dir('App') {
-                    sh './gradlew clean build'
-                
-            }
-}
-        }
 
         stage('SonarQube Analysis') {
             steps {
