@@ -9,53 +9,53 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'docker.io/abdallah1312/ivolve-app:latest'
         kubeconfigPath = '/home/abdallah/.kube/config'
-        deploymentYaml = 'Kubernetes/deployment.yaml' // Define your Kubernetes deployment YAML path
+        deploymentYaml = 'Kubernetes/deployment.yaml'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkoutCode() // Call the shared library function
+                checkoutCode()
             }
         }
         stage('Set Permissions') {
             steps {
-                setPermissions() // Call the shared library function
+                setPermissions(dir: 'App') // Example parameter
             }
         }
         stage('Build') {
             steps {
-                build() // Call the shared library function
+                build(dir: 'App') // Example parameter
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                sonarQubeAnalysis() // Call the shared library function
+                sonarQubeAnalysis(dir: 'App') // Example parameter
             }
         }
         stage('Docker Login') {
             steps {
-                dockerLogin() // Call the shared library function
+                dockerLogin(credentialsId: 'docker-cred') // Example parameter
             }
         }
         stage('Docker Build') {
             steps {
-                dockerBuild() // Call the shared library function
+                dockerBuild(image: DOCKER_IMAGE) // Example parameter
             }
         }
         stage('Docker Push') {
             steps {
-                dockerPush() // Call the shared library function
+                dockerPush(image: DOCKER_IMAGE) // Example parameter
             }
         }
         stage('Set up Kubernetes (Kind)') {
             steps {
-                setupKubernetes() // Call the shared library function
+                setupKubernetes(clusterName: 'my-cluster') // Example parameter
             }
         }
         stage('Deploy to Kind') {
             steps {
-                deployToKind() // Call the shared library function
+                deployToKind(config: kubeconfigPath, yaml: deploymentYaml) // Example parameters
             }
         }
     }
