@@ -91,12 +91,14 @@ dir('App') {
                    
         stage('Deploy') {
             steps {
+                dir('Kubernetes'){ 
                 echo "Deploying the application to Kubernetes"
                     sh 'ls'
                 // sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
                     sh 'kubectl apply -f deployment.yaml'
             }
         }
+}
     }
 
     post {
