@@ -17,6 +17,7 @@ pipeline {
         stage('Terraform destroy') {
             steps {
                 script {
+                    terraforminit()
                     terraformdestroy()  // Call the terraformInit function from shared library
                 }
             }
