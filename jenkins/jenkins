@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = 'docker.io/abdallah1312/docckerimage:latest'
+        DOCKER_IMAGE = 'docker.io/abdallah1312/ivolve-app:latest'
         kubeconfigPath = '/home/ubuntu/config'
         deploymentYaml = 'Kubernetes/deployment.yaml' // Define your Kubernetes deployment YAML path
     }
