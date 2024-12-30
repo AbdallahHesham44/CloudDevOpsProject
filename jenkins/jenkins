@@ -1,6 +1,7 @@
 pipeline {
-    agent any
-
+     agent {
+        label 'my-slave' // Replace 'my-slave-label' with the label assigned to your Jenkins agent
+    }
     tools {
         gradle 'Gradle' // Ensure this matches your Jenkins setup
     }
