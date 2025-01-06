@@ -14,6 +14,7 @@ Terraform modules are a fundamental component of Terraform's architecture, enabl
 ### 1.Create Vpc Module:
 
 ├── [**main.tf**]([https://github.com/AbdallahHesham44/CloudDevOpsProject/blob/main/terraform/main.tf])
+
 └── [**variables.tf**](https://github.com/Marwan933/CloudDevOpsProject/blob/main/terraform/modules/vpc/variables.tf)
 
 #### 1.1. main.tf file:
